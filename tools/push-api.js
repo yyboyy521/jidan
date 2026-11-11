@@ -78,24 +78,71 @@ function commitMeta(sha) {
   };
 }
 
+/**
+ * 逐层构建 tree：必须按 git 的规范顺序提交（文件名按字节比较，目录名后补 "/"），
+ * 否则 API 会保留提交顺序，导致 tree 哈希与本地不一致。
+ */
+function gitSortKey(e) {
+  return Buffer.concat([Buffer.from(e.name, 'utf8'), Buffer.from(e.isDir ? '/' : '', 'utf8')]);
+}
+
 async function ensureTree(token, owner, repo, commit) {
-  const lines = git(['ls-tree', '-r', commit]).split('\n').filter(Boolean);
-  const tree = [];
-  for (const line of lines) {
-    const m = line.match(/^(\d+) (\w+) ([a-f0-9]+)\t(.+)$/);
-    if (!m) continue;
-    const [, mode, type, sha, p] = m;
-    if (type !== 'blob') continue;
-    const content = execFileSync('git', ['cat-file', 'blob', sha], { cwd: ROOT, maxBuffer: 64 * 1024 * 1024 });
+  const raw = execFileSync('git', ['-c', 'core.quotepath=false', 'ls-tree', '-r', '-z', commit],
+    { cwd: ROOT, maxBuffer: 64 * 1024 * 1024 }).toString();
+  const entries = [];
+  for (const rec of raw.split('\0')) {
+    if (!rec) continue;
+    const tab = rec.indexOf('\t');
+    const head = rec.slice(0, tab).split(' ');
+    const p = rec.slice(tab + 1);
+    entries.push({ mode: head[0], type: head[1], sha: head[2], path: p });
+  }
+
+  // 目录树：dir -> Map(name -> entry)
+  const dirs = new Map();
+  const getDir = d => {
+    if (!dirs.has(d)) dirs.set(d, new Map());
+    return dirs.get(d);
+  };
+  getDir('');
+
+  for (const e of entries) {
+    const content = execFileSync('git', ['cat-file', 'blob', e.sha], { cwd: ROOT, maxBuffer: 64 * 1024 * 1024 });
     const r = await api(token, owner, repo, 'POST', '/git/blobs', {
       content: content.toString('base64'), encoding: 'base64'
     });
-    if (r.st !== 201) throw new Error('上传 blob 失败 ' + p + ': ' + (r.b.message || r.st));
-    tree.push({ path: p, mode, type: 'blob', sha: r.b.sha });
+    if (r.st !== 201) throw new Error('上传 blob 失败 ' + e.path + ': ' + (r.b.message || r.st));
+    const slash = e.path.lastIndexOf('/');
+    const dir = slash < 0 ? '' : e.path.slice(0, slash);
+    const name = slash < 0 ? e.path : e.path.slice(slash + 1);
+    getDir(dir).set(name, { name, mode: e.mode, sha: r.b.sha, isDir: false });
   }
-  const t = await api(token, owner, repo, 'POST', '/git/trees', { tree });
-  if (t.st !== 201) throw new Error('创建 tree 失败: ' + (t.b.message || t.st));
-  return t.b.sha;
+
+  // 自底向上创建目录树
+  const allDirs = [...dirs.keys()].filter(d => d !== '').sort((a, b) => b.split('/').length - a.split('/').length);
+  for (const d of allDirs) {
+    const slash = d.lastIndexOf('/');
+    const parent = slash < 0 ? '' : d.slice(0, slash);
+    const name = slash < 0 ? d : d.slice(slash + 1);
+    getDir(parent).set(name, { name, mode: '040000', sha: null, isDir: true, dirPath: d });
+  }
+
+  const built = new Map();
+  async function build(dir) {
+    const m = getDir(dir);
+    const items = [...m.values()].sort((a, b) => Buffer.compare(gitSortKey(a), gitSortKey(b)));
+    const tree = [];
+    for (const it of items) {
+      let sha = it.sha;
+      if (it.isDir) sha = await build(it.dirPath);
+      tree.push({ path: it.name, mode: it.mode, type: it.isDir ? 'tree' : 'blob', sha });
+    }
+    const t = await api(token, owner, repo, 'POST', '/git/trees', { tree });
+    if (t.st !== 201) throw new Error('创建 tree 失败 ' + (dir || '<root>') + ': ' + (t.b.message || t.st));
+    built.set(dir, t.b.sha);
+    return t.b.sha;
+  }
+  return build('');
 }
 
 (async () => {
