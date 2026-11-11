@@ -1,0 +1,214 @@
+{
+  "runs": 1600,
+  "perCell": 100,
+  "summary": {
+    "random": {
+      "label": "随机",
+      "games": 400,
+      "collapseRate": 21,
+      "collapseAvgTurn": 13.62,
+      "earlyCollapseRate": 2,
+      "avgTurn": 22.61,
+      "avgStates": 1.93,
+      "stateHistogram": {
+        "0": 70,
+        "1": 96,
+        "2": 105,
+        "3+": 129
+      },
+      "runsWithState": 82.5,
+      "maxConcurrent": 2,
+      "collapseByChar": {
+        "memedealer": 31,
+        "lurker": 26,
+        "grinder": 21,
+        "gymrat": 6
+      },
+      "endings": {
+        "end_happy": 99,
+        "end_normal": 46,
+        "end_zero_energy": 40,
+        "end_top": 61,
+        "end_pet": 41,
+        "end_memelord": 42,
+        "end_melon": 11,
+        "end_zero_relation": 29,
+        "end_gym": 14,
+        "end_zero_fame": 9,
+        "end_lurker": 7,
+        "end_zero_mood": 1
+      },
+      "stateCounts": {
+        "瓜瘾": 156,
+        "卷王附体": 160,
+        "emo": 79,
+        "薄肌之魂": 71,
+        "上头": 245,
+        "社死": 47,
+        "破防": 14
+      }
+    },
+    "rational": {
+      "label": "理性",
+      "games": 400,
+      "collapseRate": 0,
+      "collapseAvgTurn": null,
+      "earlyCollapseRate": 0,
+      "avgTurn": 25,
+      "avgStates": 1.62,
+      "stateHistogram": {
+        "0": 65,
+        "1": 142,
+        "2": 109,
+        "3+": 84
+      },
+      "runsWithState": 83.8,
+      "maxConcurrent": 2,
+      "collapseByChar": {
+        "memedealer": 0,
+        "lurker": 0,
+        "grinder": 0,
+        "gymrat": 0
+      },
+      "endings": {
+        "end_happy": 99,
+        "end_memelord": 108,
+        "end_pet": 138,
+        "end_melon": 22,
+        "end_top": 25,
+        "end_gym": 8
+      },
+      "stateCounts": {
+        "瓜瘾": 137,
+        "上头": 344,
+        "社死": 7,
+        "卷王附体": 119,
+        "薄肌之魂": 30,
+        "emo": 12
+      }
+    },
+    "silent": {
+      "label": "沉默",
+      "games": 400,
+      "collapseRate": 93.8,
+      "collapseAvgTurn": 12.8,
+      "earlyCollapseRate": 21.3,
+      "avgTurn": 13.57,
+      "avgStates": 0.99,
+      "stateHistogram": {
+        "0": 156,
+        "1": 144,
+        "2": 66,
+        "3+": 34
+      },
+      "runsWithState": 61,
+      "maxConcurrent": 2,
+      "collapseByChar": {
+        "memedealer": 80,
+        "lurker": 100,
+        "grinder": 100,
+        "gymrat": 95
+      },
+      "endings": {
+        "end_lurker": 59,
+        "end_zero_mood": 40,
+        "end_zero_relation": 258,
+        "end_normal": 22,
+        "end_zero_fame": 21
+      },
+      "stateCounts": {
+        "emo": 187,
+        "瓜瘾": 80,
+        "卷王附体": 99,
+        "社死": 3,
+        "薄肌之魂": 25
+      }
+    },
+    "first": {
+      "label": "固定首项",
+      "games": 400,
+      "collapseRate": 100,
+      "collapseAvgTurn": 10.3,
+      "earlyCollapseRate": 25.3,
+      "avgTurn": 10.3,
+      "avgStates": 0.83,
+      "stateHistogram": {
+        "0": 167,
+        "1": 158,
+        "2": 54,
+        "3+": 21
+      },
+      "runsWithState": 58.3,
+      "maxConcurrent": 2,
+      "collapseByChar": {
+        "memedealer": 100,
+        "lurker": 100,
+        "grinder": 100,
+        "gymrat": 100
+      },
+      "endings": {
+        "end_zero_energy": 400
+      },
+      "stateCounts": {
+        "上头": 157,
+        "卷王附体": 59,
+        "瓜瘾": 53,
+        "薄肌之魂": 39,
+        "emo": 23
+      }
+    }
+  },
+  "endingDist": {
+    "end_happy": 198,
+    "end_normal": 68,
+    "end_zero_energy": 440,
+    "end_top": 86,
+    "end_pet": 179,
+    "end_memelord": 150,
+    "end_melon": 33,
+    "end_zero_relation": 287,
+    "end_gym": 22,
+    "end_zero_fame": 30,
+    "end_lurker": 66,
+    "end_zero_mood": 41
+  },
+  "reachable": 12,
+  "stateCounts": {
+    "瓜瘾": 426,
+    "卷王附体": 437,
+    "emo": 301,
+    "薄肌之魂": 165,
+    "上头": 746,
+    "社死": 57,
+    "破防": 14
+  },
+  "peakConcurrent": 2,
+  "collapseStat": {
+    "energy": 440,
+    "relation": 349,
+    "fame": 34,
+    "mood": 36
+  },
+  "finale": {
+    "fullRuns": 828,
+    "avgLastOrder": 71.52,
+    "lastEvents": {
+      "ev_birthday(order 70)": 109,
+      "ev_finals(order 72)": 195,
+      "ev_newyear(order 74)": 136,
+      "ev_lerun(order 69)": 61,
+      "ev_water(order 68)": 30,
+      "ev_baituan(order 66)": 12,
+      "ev_v50_return(order 75)": 15,
+      "ev_hightlight(order 73)": 105,
+      "ev_sick(order 71)": 139,
+      "ev_bubbletea(order 67)": 10,
+      "ev_year_end(order 76)": 8,
+      "ev_rain(order 65)": 4,
+      "ev_poor(order 64)": 1,
+      "ev_tuike(order 61)": 1,
+      "ev_genshin(order 62)": 1,
+      "ev_redpacket(order 63)": 1
+    }
+  }
+}

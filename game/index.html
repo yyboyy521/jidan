@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>冀🥚协会青春版</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===================== 屏幕一：标题页 ===================== -->
+<div class="screen" id="screen-title">
+  <!-- v5 音效开关（右上角，纯本地偏好，与动画降级互不影响） -->
+  <button class="btn-text sfx-toggle" id="btn-sfx" type="button"
+          aria-pressed="false" aria-label="音效已开启，点击静音" title="音效已开启">🔊</button>
+  <div class="title-wrap">
+    <div class="title-logo">冀🥚协会青春版</div>
+    <p class="title-sub">一个关于选择的群聊人生模拟</p>
+    <p class="title-tag">每次选择的后果，当时都看不见。</p>
+    <div class="title-actions">
+      <button class="btn btn-primary btn-lg" id="btn-new-game">开始新的人生</button>
+      <button class="btn btn-ghost btn-lg" id="btn-continue" hidden>继续上次</button>
+    </div>
+    <div class="title-links">
+      <button class="btn btn-text" id="btn-collection">图鉴 · 结局与成就</button>
+      <span class="title-links-dot">·</span>
+      <button class="btn btn-text" id="btn-notice">游戏须知</button>
+    </div>
+    <p class="title-foot">纯本地运行 · 无需安装 · 存档保存在浏览器里</p>
+  </div>
+</div>
+
+<!-- ===================== 屏幕二：角色选择 ===================== -->
+<div class="screen" id="screen-select" hidden>
+  <header class="page-head">
+    <h1>选择你的开局</h1>
+    <p>四段不同的开局，同样的冀🥚协会。选定后可以把 <b>5 点</b>自由分配到四项属性上。</p>
+  </header>
+  <div class="select-layout">
+    <div class="char-grid" id="char-grid"><!-- js 渲染 --></div>
+    <aside class="char-detail card" id="char-detail" hidden>
+      <!-- js 渲染：人设 + 数值微调 -->
+    </aside>
+  </div>
+  <div class="select-footer">
+    <button class="btn btn-ghost" id="btn-back-title">← 返回</button>
+    <button class="btn btn-primary btn-lg" id="btn-start-life" disabled>开始人生</button>
+  </div>
+</div>
+
+<!-- ===================== 屏幕三：游戏主界面 ===================== -->
+<div class="screen" id="screen-game" hidden>
+  <header class="game-head">
+    <div class="game-head-left">
+      <span class="game-logo">冀🥚协会</span>
+      <span class="char-chip" id="char-chip"></span>
+    </div>
+    <div class="game-head-right">
+      <span class="turn-chip" id="turn-chip"></span>
+      <button class="btn btn-ghost btn-sm" id="btn-timeline">📜 足迹</button>
+      <button class="btn btn-ghost btn-sm" id="btn-restart">重新开始</button>
+    </div>
+  </header>
+
+  <div class="game-layout">
+    <!-- 左栏：数值仪表盘 -->
+    <aside class="stats-panel card" id="stats-panel">
+      <h2 class="panel-title">此刻的你</h2>
+      <div id="stats-bars"><!-- js 渲染 --></div>
+      <div class="state-block" id="state-block" hidden>
+        <h3 class="panel-subtitle">状态</h3>
+        <div class="state-list" id="state-list"></div>
+      </div>
+      <div class="flag-block" id="flag-block" hidden>
+        <h3 class="panel-subtitle">身上的印记</h3>
+        <div class="flag-list" id="flag-list"></div>
+      </div>
+    </aside>
+
+    <!-- 右栏：事件卡 -->
+    <main class="event-area">
+      <div class="event-card card" id="event-card">
+        <div class="event-scene" id="event-scene"></div>
+        <h2 class="event-title" id="event-title"></h2>
+        <p class="event-text" id="event-text"></p>
+        <div class="event-options" id="event-options"></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ===================== 屏幕四：结局页 ===================== -->
+<div class="screen" id="screen-ending" hidden>
+  <div class="ending-wrap" id="ending-wrap">
+    <!-- js 渲染 -->
+  </div>
+</div>
+
+<!-- ===================== 屏幕五：图鉴页（结局收集 + 成就） ===================== -->
+<div class="screen" id="screen-collection" hidden>
+  <header class="page-head">
+    <h1>图鉴</h1>
+    <p>走过的路会留在这里。没走到的，先留着悬念。</p>
+  </header>
+  <div id="collection-wrap"><!-- js 渲染 --></div>
+  <div class="collection-footer">
+    <button class="btn btn-ghost" id="btn-collection-back">← 返回</button>
+    <button class="btn btn-ghost btn-sm" id="btn-collection-reset">重置收集进度</button>
+  </div>
+</div>
+
+<!-- ===================== 屏幕六：须知页 ===================== -->
+<div class="screen" id="screen-notice" hidden>
+  <header class="page-head">
+    <h1>游戏须知</h1>
+    <p>开始之前，花一分钟认识这个游戏。</p>
+  </header>
+
+  <div class="notice-wrap">
+    <section class="card notice-card">
+      <h2 class="notice-title">这是什么游戏</h2>
+      <p>《冀🥚协会青春版》（原《岔路口》）是一款网页文字选择养成游戏。你将扮演一位复旦大学大一新生，在一个热闹的院系群里度过第一个学期。</p>
+      <p>开局选择一种人设并自拟名字，此后会遇到一连串来自群聊日常的事件。每个事件提供若干条你可以发到群里的消息作为选项——发言还是沉默、跟梗还是吐槽、帮忙还是旁观，都由你决定。</p>
+      <p>你的选择会实时影响四项数值：人际关系、心情、声望、精力。数值有涨有跌，攒得起来的东西，也花得掉。有的路通向群宠，有的路通向查无此人。全程约二十五段，一局十分钟左右。</p>
+    </section>
+
+    <section class="card notice-card">
+      <h2 class="notice-title">内容来源</h2>
+      <p>本作的事件、台词与梗，取材自一个真实的微信群聊天记录，并进行了适当改编与整理。群里的原话被改写进事件正文，出现的群友昵称保留自真实记录。</p>
+      <p>游戏中的情节与人物均为艺术加工，数值涨跌纯属游戏设计，不代表对任何真实人物的褒贬。如有雷同，纯属群聊。</p>
+    </section>
+
+    <section class="card notice-card">
+      <h2 class="notice-title">关于作者</h2>
+      <p>作者：企鹅先生。</p>
+      <p>一个人、一个群、一个学期，做成了这个小游戏。如果它让你笑过一次，那就是它存在的意义。</p>
+
+      <div class="support-block">
+        <h3 class="support-title">支持作者</h3>
+        <p class="support-hint">如果玩得开心，可以请作者喝杯奶茶。扫码赞赏，金额随意。</p>
+        <img class="reward-qr" src="assets/reward-qr.jpg" alt="赞赏付款码" loading="lazy">
+      </div>
+    </section>
+  </div>
+
+  <div class="notice-footer">
+    <button class="btn btn-primary btn-lg" id="btn-notice-back">← 返回</button>
+  </div>
+</div>
+
+<!-- ===================== 起名模态层（选定角色后、进游戏前） ===================== -->
+<div class="modal-overlay" id="name-modal" hidden>
+  <div class="modal-card card">
+    <div class="modal-head">给自己起个名字</div>
+    <p class="name-hint">这个名字会出现在顶栏与结局页（1-12 字，自动去除空白；留空就叫「匿名小登」）。</p>
+    <input class="name-input" id="name-input" type="text" maxlength="12"
+           placeholder="匿名小登" autocomplete="off">
+    <div class="modal-actions name-actions">
+      <button class="btn btn-ghost" id="btn-name-cancel">再想想</button>
+      <button class="btn btn-primary" id="btn-name-confirm">就叫这个，开始 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 结果卡模态层 ===================== -->
+<div class="modal-overlay" id="result-modal" hidden>
+  <div class="modal-card card">
+    <div class="modal-head">选择的结果</div>
+    <ul class="change-list" id="change-list"></ul>
+    <div class="flag-gained" id="flag-gained" hidden></div>
+    <div class="state-gained" id="state-gained" hidden></div>
+    <p class="modal-narrate" id="modal-narrate"></p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="btn-modal-continue">继续 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== 足迹时间线抽屉（v4） ===================== -->
+<div class="timeline-scrim" id="timeline-scrim" hidden></div>
+<aside class="timeline-panel" id="timeline-panel" hidden aria-label="足迹时间线">
+  <div class="timeline-panel-head">
+    <span>📜 足迹</span>
+    <button class="btn-text" id="btn-timeline-close" type="button">关闭 ✕</button>
+  </div>
+  <div class="timeline-panel-body" id="timeline-panel-body"><!-- js 渲染 --></div>
+</aside>
+
+<div class="toast" id="toast" hidden></div>
+
+<!-- v5：状态说明卡（点击/悬停侧栏状态徽章时出现，读 STATES_META.desc） -->
+<div class="state-pop" id="state-pop" hidden role="dialog" aria-live="polite"></div>
+
+<!-- file:// 协议下 ES module import 会被 CORS 拦截，
+     因此这里使用普通 script 按序加载（依赖顺序即加载顺序） -->
+<script src="js/data.js"></script>
+<script src="js/data/events.js"></script>
+<script src="js/stats.js"></script>
+<script src="js/events.js"></script>
+<script src="js/endings.js"></script>
+<script src="js/achievements.js"></script>
+<script src="js/chat-import.js"></script>
+<script src="js/name.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/engine.js"></script>
+</body>
+</html>

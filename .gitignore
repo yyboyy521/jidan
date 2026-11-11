@@ -1,0 +1,7 @@
+# 隐私与内部数据不入仓库
+聊天记录/
+.workbuddy/
+
+# 系统杂项
+Thumbs.db
+Desktop.ini
